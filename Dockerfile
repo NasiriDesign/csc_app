@@ -20,7 +20,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /app
 #COPY EXECUTEABLE FILE
 COPY --from=0 /app/main .
-COPY --from=0 /app/app.env .
+#COPY --from=0 /app/app.env .
 #DEBUG
 #RUN pwd
 #RUN ls -l app.env
