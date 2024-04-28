@@ -1,4 +1,4 @@
-module nasiri-design.de/csc
+module nasiri-design.de/csc_app
 
 go 1.22.2
 
