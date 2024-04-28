@@ -15,9 +15,9 @@ func main() {
 		})
 	})
 
-	r.GET("/", func(c *gin.Context) {
+	r.GET("/freebitcoin", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"nachricht": "du kelb",
+			"nachricht": "du kelb hast gedacht bitcoin umsonst.",
 		})
 	})
 
