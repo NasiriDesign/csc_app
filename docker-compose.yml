@@ -11,5 +11,5 @@ services:
       - wp_myNetwork
 
 networks:
-  myNetwork:
+  wp_myNetwork:
     external: true
