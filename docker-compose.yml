@@ -8,7 +8,8 @@ services:
     expose:
       - "3000"
     networks:
-      - myNetwork
+      - wp_myNetwork
 
 networks:
   myNetwork:
+  external: true
