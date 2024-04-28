@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  go:
+    image: go-image
+    container_name: backend
+    restart: always
+    expose:
+      - "3000"
