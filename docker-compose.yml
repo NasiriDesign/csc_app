@@ -9,3 +9,6 @@ services:
       - "3000"
     networks:
       - myNetwork
+
+networks:
+  myNetwork:
