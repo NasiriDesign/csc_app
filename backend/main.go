@@ -21,5 +21,11 @@ func main() {
 		})
 	})
 
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"nachricht": "du kelb.",
+		})
+	})
+
 	r.Run(":3000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
