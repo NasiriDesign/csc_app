@@ -12,4 +12,4 @@ services:
 
 networks:
   myNetwork:
-  external: true
+    external: true
