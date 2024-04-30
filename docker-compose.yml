@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   go:
-    image: go-image
-    container_name: app
+    image: golang_app_image
+    container_name: golang
     restart: always
     ports: 
       - 3000:3000
