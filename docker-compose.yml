@@ -3,7 +3,7 @@ version: '3.8'
 services:
   go:
     image: golang_app_image
-    container_name: golang
+    container_name: csc_app
     restart: always
     ports: 
       - 3000:3000
