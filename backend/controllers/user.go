@@ -4,8 +4,8 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/nasiridesign/csc_app/models"
 
 	"github.com/nasiridesign/csc_app/database"
@@ -20,7 +20,7 @@ type UserRepo struct {
 }
 
 // Eine Neue Instanz des UserRepo Typs zu erstellen
-func New() *UserRepo {
+func NewUserRepo() *UserRepo {
 	db := database.InitDb()
 	db.AutoMigrate(&models.User{})
 	return &UserRepo{Db: db}
@@ -57,38 +57,51 @@ func (repository *UserRepo) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// get user by id
+// GetUser retrieves a user by their UUID.
 func (repository *UserRepo) GetUser(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	userID, err := uuid.Parse(c.Param("user_id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid User ID"})
+		return
+	}
+
 	var user models.User
-	err := models.GetUser(repository.Db, &user, id)
+	err = models.GetUserByID(repository.Db, &user, userID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(http.StatusNotFound)
 			return
 		}
-
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 	c.JSON(http.StatusOK, user)
 }
 
-// update user
+// UpdateUser updates a user's information.
 func (repository *UserRepo) UpdateUser(c *gin.Context) {
 	var user models.User
-	id, _ := strconv.Atoi(c.Param("id"))
-	err := models.GetUser(repository.Db, &user, id)
+	userID, err := uuid.Parse(c.Param("user_id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid User ID"})
+		return
+	}
+
+	err = models.GetUserByID(repository.Db, &user, userID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(http.StatusNotFound)
 			return
 		}
-
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
-	c.BindJSON(&user)
+
+	if err := c.BindJSON(&user); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	err = models.UpdateUser(repository.Db, &user)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -97,11 +110,16 @@ func (repository *UserRepo) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// delete user
+// DeleteUser deletes a user by their UUID.
 func (repository *UserRepo) DeleteUser(c *gin.Context) {
 	var user models.User
-	id, _ := strconv.Atoi(c.Param("id"))
-	err := models.DeleteUser(repository.Db, &user, id)
+	userID, err := uuid.Parse(c.Param("user_id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid User ID"})
+		return
+	}
+
+	err = models.DeleteUser(repository.Db, &user, userID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

@@ -21,12 +21,23 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
-	userRepo := controllers.New()
+	//User API
+	userRepo := controllers.NewUserRepo()
 	r.POST("/adduser", userRepo.CreateUser)
-	r.GET("/getuser", userRepo.GetUsers)
-	r.GET("/getuser/:id", userRepo.GetUser)
-	r.PUT("/updateuser/:id", userRepo.UpdateUser)
-	r.DELETE("/deleteuser/:id", userRepo.DeleteUser)
+	r.GET("/getusers", userRepo.GetUsers)
+	r.GET("/getuser/:user_id", userRepo.GetUser)
+	r.PUT("/updateuser/:user_id", userRepo.UpdateUser)
+	r.DELETE("/deleteuser/:user_id", userRepo.DeleteUser)
 
+	//Club API
+	clubRepo := controllers.NewClubRepo()
+	r.POST("/addclub", clubRepo.CreateClub)
+	r.GET("/getclubs", clubRepo.GetClubs)
+	r.GET("/getclub/:club_id", clubRepo.GetClubByID)
+	r.PUT("/updateclub/:club_id", clubRepo.UpdateClubByID)
+	r.DELETE("/deleteclub/:club_id", clubRepo.DeleteClub)
+	r.GET("/getclubusers/:club_id", clubRepo.GetClubUsers)
+	r.POST("/addusertoclub/:club_id/:user_id", clubRepo.AddUserToClub)
+	r.POST("/resetuserclub/:user_id", clubRepo.RemoveUserFromClub)
 	return r
 }
