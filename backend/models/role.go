@@ -11,6 +11,7 @@ import (
 type Role struct {
 	RoleID       uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key" json:"role_id"`
 	ClubID       uuid.UUID // Foreign key
+	UserID       uuid.UUID // Foreign Key
 	Name         string    `json:"role_name"`
 	EditPost     bool      `json:"edit_post"`
 	EditEvents   bool      `json:"edit_events"`
@@ -26,14 +27,26 @@ func CreateRole(db *gorm.DB, role *Role, clubID, userID uuid.UUID) error {
 		return errors.New("user not found in the club")
 	}
 
-	// Set the club ID and created time
+	// Check if the user already has a role in the club
+	if user.RoleID != uuid.Nil {
+		return errors.New("user already has a role in the club")
+	}
+
+	// Set the club ID & user ID and created time
 	role.ClubID = clubID
+	role.UserID = userID
 	role.CreatedAt = time.Now()
 
 	// Create the role
 	if err := db.Create(role).Error; err != nil {
 		return err
 	}
+
+	// Update RoleID in the user table
+	if err := db.Model(&user).Update("role_id", role.RoleID).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 

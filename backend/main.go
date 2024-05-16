@@ -39,5 +39,13 @@ func setupRouter() *gin.Engine {
 	r.GET("/getclubusers/:club_id", clubRepo.GetClubUsers)
 	r.POST("/addusertoclub/:club_id/:user_id", clubRepo.AddUserToClub)
 	r.POST("/resetuserclub/:user_id", clubRepo.RemoveUserFromClub)
+
+	//Role API
+	roleRepo := controllers.NewRoleRepo()
+	r.POST("/addrole/:club_id/:user_id", roleRepo.CreateRole)
+	r.GET("/getrole/:role_id", roleRepo.GetRoleByID)
+	r.PUT("/updaterole", roleRepo.UpdateRole)
+	r.POST("/deleterole/:role_id", roleRepo.DeleteRole)
+
 	return r
 }

@@ -50,7 +50,7 @@ func (repository *RoleRepo) CreateRole(c *gin.Context) {
 
 	// Create the role
 	if err := models.CreateRole(repository.Db, &role, clubID, userID); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to create role"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

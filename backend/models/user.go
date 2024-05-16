@@ -10,8 +10,7 @@ import (
 type User struct {
 	UserID         uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key" json:"user_id"`
 	ClubID         uuid.UUID `json:"club_id"` // Foreign key
-	RoleID         uuid.UUID // Foreign key
-	Role           Role      `json:"role"`
+	RoleID         uuid.UUID `json:"role_id"` // Foreign key
 	FirstName      string    `gorm:"column:first_name" json:"first_name"`
 	LastName       string    `gorm:"column:last_name" json:"last_name"`
 	Password       string    `json:"password"`
@@ -29,6 +28,7 @@ type User struct {
 func CreateUser(db *gorm.DB, User *User) (err error) {
 	User.CreatedAt = time.Now()
 	User.LastLogin = time.Now()
+	User.RoleID = uuid.Nil
 
 	err = db.Create(User).Error
 	if err != nil {
